@@ -4,8 +4,12 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
   [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/DineshMadhavanM/Image-to-text/issues)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+  [![Good First Issues](https://img.shields.io/github/issues/DineshMadhavanM/Image-to-text/good%20first%20issue)](https://github.com/DineshMadhavanM/Image-to-text/labels/good%20first%20issue)
 
   An AI-powered tool that generates natural language descriptions for sports-related images.
+  
+  **🤝 Looking for contributors!** Check out our [good first issues](https://github.com/DineshMadhavanM/Image-to-text/labels/good%20first%20issue) and [contributing guide](CONTRIBUTING.md) to get started.
 </div>
 
 ## 🚀 Features
@@ -65,7 +69,55 @@ Caption: A spectacular moment as the batsman drives the ball through the covers 
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) to get started.
+We welcome contributions of all kinds! Here's how you can help:
+
+### 🎯 Quick Start for New Contributors
+1. **Good First Issues** - Look for issues labeled [`good first issue`](https://github.com/DineshMadhavanM/Image-to-text/labels/good%20first%20issue)
+2. **Documentation** - Help improve docs, examples, and tutorials
+3. **Bug Reports** - Found a bug? [Open an issue](https://github.com/DineshMadhavanM/Image-to-text/issues/new)
+4. **Feature Requests** - Have an idea? [Suggest it here](https://github.com/DineshMadhavanM/Image-to-text/issues/new?template=feature_request.md)
+
+### 📋 Areas Needing Help
+- 🧪 **Testing** - Expand test coverage, add integration tests
+- 📚 **Documentation** - Improve API docs, add more examples
+- 🌐 **Web UI** - Enhance the Flask web interface
+- 🏆 **Sports Support** - Add more sports categories and terminology
+- 🚀 **Performance** - Optimize model inference and image processing
+- 🐳 **Docker** - Add containerization support
+
+### 🛠️ Development Setup
+
+```bash
+# 1. Fork and clone the repository
+git clone https://github.com/YOUR-USERNAME/Image-to-text.git
+cd Image-to-text
+
+# 2. Set up development environment
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+
+# 3. Install dependencies in development mode
+pip install -r requirements.txt
+pip install -e .
+
+# 4. Run tests
+python -m pytest tests/
+
+# 5. Start the development server
+python app.py
+```
+
+### 📖 Detailed Guide
+Please read our [Contributing Guidelines](CONTRIBUTING.md) for detailed information on:
+- Code style and standards
+- Pull request process
+- Testing requirements
+- Commit message format
+
+### 💬 Get Help
+- 📧 **Discussions** - [Ask questions, share ideas](https://github.com/DineshMadhavanM/Image-to-text/discussions)
+- 🐛 **Issues** - [Report bugs or request features](https://github.com/DineshMadhavanM/Image-to-text/issues)
+- 👥 **Community** - Join our contributor community
 
 ## 📝 License
 
