@@ -4,16 +4,33 @@ import torchvision.transforms as transforms
 from torchvision import models
 import torch.nn as nn
 import warnings
+import logging
+import random
+import os
+from typing import Tuple, Optional
+
 warnings.filterwarnings('ignore')
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def validate_image_path(image_path: str) -> None:
+    """Validate that the image path exists and is accessible."""
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"Image file not found: {image_path}")
+    if not os.access(image_path, os.R_OK):
+        raise PermissionError(f"Cannot read image file: {image_path}")
 
 class SportsCaptioner:
     def __init__(self):
         """Initialize the Sports Captioning model and processor."""
         # Set device
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        logger.info(f"Using device: {self.device}")
         
         # Load a pre-trained ResNet model for feature extraction
-        self.model = models.resnet50(pretrained=True)
+        self.model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
         # Remove the last fully connected layer
         self.model = torch.nn.Sequential(*(list(self.model.children())[:-2]))
         self.model = self.model.to(self.device)
@@ -66,29 +83,19 @@ class SportsCaptioner:
             'basketball': ['dunk', 'three-pointer', 'layup', 'rebound', 'assist', 'block', 'steal', 'fast break', 'alley-oop'],
             'tennis': ['serve', 'volley', 'forehand', 'backhand', 'ace', 'deuce', 'advantage', 'break point', 'match point']
         }
-        
-        self.emotion_phrases = [
-            'A spectacular moment as',
-            'An intense play sees',
-            'The crowd erupts as',
-            'A brilliant display of skill as',
-            'A crucial moment in the game as',
-            'A stunning play by',
-            'The tension is high as',
-            'A game-changing moment as'
-        ]
     
-    def preprocess_image(self, image_path):
+    def preprocess_image(self, image_path: str) -> Tuple[Optional[torch.Tensor], bool]:
         """Load and preprocess the input image."""
         try:
+            validate_image_path(image_path)
             image = Image.open(image_path).convert('RGB')
             image = self.transform(image).unsqueeze(0).to(self.device)
             return image, True
         except Exception as e:
-            print(f"Error loading image: {e}")
+            logger.error(f"Error loading image: {str(e)}")
             return None, False
     
-    def generate_caption(self, image_path):
+    def generate_caption(self, image_path: str) -> str:
         """Generate a sports caption for the given image."""
         # Preprocess image
         image_tensor, success = self.preprocess_image(image_path)
@@ -102,7 +109,6 @@ class SportsCaptioner:
                 
             # For this simplified version, we'll generate a basic caption
             # based on the image features
-            import random
             sport = random.choice(self.sports_categories)
             action = random.choice(self.action_verbs)
             
@@ -116,12 +122,14 @@ class SportsCaptioner:
             ]
             
             caption = random.choice(captions)
-            return f"Caption: {caption}"
+            enhanced_caption = self._enhance_caption(caption)
+            return f"Caption: {enhanced_caption}"
             
         except Exception as e:
+            logger.error(f"Error generating caption: {str(e)}")
             return f"Error generating caption: {str(e)}"
     
-    def _enhance_caption(self, caption):
+    def _enhance_caption(self, caption: str) -> str:
         """Enhance the generated caption with sports-specific terminology and emotion."""
         # Check for sports terms in the caption
         detected_sport = None
@@ -131,7 +139,6 @@ class SportsCaptioner:
                 break
         
         # Add emotion and context
-        import random
         if random.random() > 0.3:  # 70% chance to add an emotional phrase
             emotion = random.choice(self.emotion_phrases)
             caption = f"{emotion} {caption.lower()}"
@@ -142,25 +149,30 @@ class SportsCaptioner:
         return caption
 
 def main():
-    print("Sports Image Captioning AI Agent")
-    print("--------------------------------")
-    
-    # Initialize the captioner
-    captioner = SportsCaptioner()
-    
-    while True:
-        print("\nEnter the path to a sports image (or 'q' to quit):")
-        image_path = input("> ").strip('"')
+    """Main function to run the sports captioner."""
+    try:
+        logger.info("Starting Sports Captioner")
+        captioner = SportsCaptioner()
         
-        if image_path.lower() == 'q':
-            print("Goodbye!")
-            break
+        while True:
+            print("\nEnter the path to a sports image (or 'q' to quit):")
+            image_path = input("> ").strip('"')
             
-        # Generate and display caption
-        caption = captioner.generate_caption(image_path)
-        print("\n" + "="*80)
-        print(caption)
-        print("="*80)
+            if image_path.lower() == 'q':
+                print("Goodbye!")
+                break
+                
+            # Generate and display caption
+            caption = captioner.generate_caption(image_path)
+            print("\n" + "="*80)
+            print(caption)
+            print("="*80)
+            
+    except KeyboardInterrupt:
+        print("\nGoodbye!")
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        print(f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
     main()
